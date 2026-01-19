@@ -11,11 +11,28 @@ export default function Research({ user }) {
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleWebSearch = (e) => {
+    const [searchResults, setSearchResults] = useState(null);
+
+    const handleWebSearch = async (e) => {
         e.preventDefault();
         if (!searchQuery.trim()) return;
-        // DuckDuckGo search URL
-        window.open(`https://duckduckgo.com/?q=${encodeURIComponent(searchQuery)}`, '_blank');
+
+        setIsLoading(true);
+        setSearchResults(null);
+        try {
+            const res = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`);
+            const data = await res.json();
+            setSearchResults(data);
+        } catch (error) {
+            console.error("Search error:", error);
+            setSearchResults({
+                title: "Error",
+                content: "Unable to connect to the knowledge base. Please try again later.",
+                source: "System"
+            });
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleSaveKey = () => {
@@ -127,42 +144,67 @@ export default function Research({ user }) {
             <div className="glass-card" style={{ minHeight: '60vh', display: 'flex', flexDirection: 'column' }}>
 
                 {activeTab === 'web' ? (
-                    <div style={{ textAlign: 'center', padding: '40px 20px' }}>
+                    <div style={{ textAlign: 'center', padding: '40px 20px', overflowY: 'auto' }}>
                         <Globe size={64} color="var(--primary)" style={{ marginBottom: '20px', opacity: 0.8 }} />
                         <h2 style={{ fontSize: '24px', marginBottom: '10px' }}>Quick Research</h2>
                         <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>
-                            Access billions of pages via DuckDuckGo (Privacy Focused)
+                            Access knowledge instantly via Wikipedia & DuckDuckGo
                         </p>
 
-                        <form onSubmit={handleWebSearch} style={{ maxWidth: '500px', margin: '0 auto', width: '100%' }}>
+                        <form onSubmit={handleWebSearch} style={{ maxWidth: '600px', margin: '0 auto', width: '100%', position: 'relative' }}>
                             <div className="input-field" style={{ marginBottom: '0' }}>
                                 <Search size={20} />
                                 <input
-                                    placeholder="Search for papers, articles, wiki..."
+                                    placeholder="What do you want to learn about?"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     style={{ paddingRight: '50px' }}
                                 />
                                 <button
                                     type="submit"
+                                    disabled={isLoading}
                                     style={{
                                         position: 'absolute', right: '5px', top: '5px', bottom: '5px',
-                                        background: 'var(--primary)', border: 'none', borderRadius: '10px',
-                                        width: '40px', color: 'white', cursor: 'pointer',
+                                        background: isLoading ? 'grey' : 'var(--primary)', border: 'none', borderRadius: '10px',
+                                        width: '40px', color: 'white', cursor: isLoading ? 'wait' : 'pointer',
                                         display: 'flex', alignItems: 'center', justifyContent: 'center'
                                     }}
                                 >
-                                    <ExternalLink size={18} />
+                                    {isLoading ? <div className="spinner" style={{ width: 15, height: 15, border: '2px solid white', borderRadius: '50%', borderTopColor: 'transparent', animation: 'spin 1s linear infinite' }}></div> : <Search size={18} />}
                                 </button>
                             </div>
                         </form>
 
-                        <div style={{ marginTop: '40px', display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                            <QuickLink title="Google Scholar" url="https://scholar.google.com" />
-                            <QuickLink title="Wikipedia" url="https://wikipedia.org" />
-                            <QuickLink title="WolframAlpha" url="https://www.wolframalpha.com" />
-                            <QuickLink title="Khan Academy" url="https://www.khanacademy.org" />
-                        </div>
+                        {searchResults && (
+                            <div className="glass-panel" style={{ marginTop: '30px', textAlign: 'left', padding: '25px', animation: 'fadeIn 0.5s' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '15px' }}>
+                                    <h3 style={{ fontSize: '20px', fontWeight: 'bold', margin: 0, color: 'var(--primary)' }}>{searchResults.title}</h3>
+                                    <span style={{ fontSize: '12px', background: 'rgba(255,255,255,0.1)', padding: '4px 10px', borderRadius: '20px' }}>{searchResults.source}</span>
+                                </div>
+                                <p style={{ lineHeight: '1.6', fontSize: '15px', color: 'rgba(255,255,255,0.9)', whiteSpace: 'pre-wrap' }}>
+                                    {searchResults.content}
+                                </p>
+                                {searchResults.url && (
+                                    <a href={searchResults.url} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', marginTop: '20px', color: '#3b82f6', textDecoration: 'none', fontSize: '14px', fontWeight: 'bold' }}>
+                                        Read Full Article <ExternalLink size={14} />
+                                    </a>
+                                )}
+                            </div>
+                        )}
+
+                        {!searchResults && (
+                            <div style={{ marginTop: '50px', display: 'flex', gap: '15px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                                <QuickLink title="Google Scholar" url="https://scholar.google.com" />
+                                <QuickLink title="Wikipedia" url="https://wikipedia.org" />
+                                <QuickLink title="WolframAlpha" url="https://www.wolframalpha.com" />
+                                <QuickLink title="Khan Academy" url="https://www.khanacademy.org" />
+                            </div>
+                        )}
+
+                        <style>{`
+                            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+                            @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+                        `}</style>
                     </div>
                 ) : (
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%' }}>
