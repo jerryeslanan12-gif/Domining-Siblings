@@ -220,7 +220,7 @@ export function useStore() {
                         }
                     }
 
-                    // Add new reaction
+                    // Add new reaction from this user
                     return { ...p, likes: [...likes, { userId, type }] };
                 }
                 return p;

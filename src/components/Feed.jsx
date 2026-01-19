@@ -198,9 +198,10 @@ export default function Feed({ user, store, searchQuery }) {
                                     </span>
                                 )}
                                 {location && (
-                                    <span style={{ background: 'rgba(239, 68, 68, 0.2)', color: '#f87171', padding: '5px 10px', borderRadius: '15px', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '13px' }}>
-                                        <MapPin size={14} /> at {location}
-                                        <X size={12} style={{ cursor: 'pointer' }} onClick={() => setLocation('')} />
+                                    <span style={{ background: 'rgba(239, 68, 68, 0.2)', color: '#f87171', padding: '5px 10px', borderRadius: '15px', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '150px' }}>
+                                        <MapPin size={14} flexShrink={0} />
+                                        {location.includes("Lat") ? "Current Location" : location}
+                                        <X size={12} style={{ cursor: 'pointer' }} onClick={() => setLocation('')} flexShrink={0} />
                                     </span>
                                 )}
                             </div>

@@ -43,13 +43,14 @@ export default function Settings({ store }) {
                 <p style={{ color: '#94a3b8', fontSize: '1.2rem' }}>Personalize your experience.</p>
             </motion.div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '250px 1fr', gap: '40px', alignItems: 'start' }}>
+            <div className="settings-grid">
                 {/* Tabs Sidebar */}
                 <div className="tabs-sidebar" style={{ position: 'sticky', top: '120px' }}>
                     {tabs.map(tab => (
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
+                            data-active={activeTab === tab.id}
                             style={{
                                 display: 'flex', alignItems: 'center', gap: '15px', width: '100%', padding: '15px 20px',
                                 background: activeTab === tab.id ? 'linear-gradient(90deg, rgba(59, 130, 246, 0.1), transparent)' : 'transparent',
@@ -57,7 +58,7 @@ export default function Settings({ store }) {
                                 color: activeTab === tab.id ? '#3b82f6' : '#94a3b8',
                                 fontSize: '16px', fontWeight: '600', cursor: 'pointer', textAlign: 'left',
                                 transition: '0.3s', borderRadius: '0 12px 12px 0',
-                                whiteSpace: 'nowrap', flexShrink: 0  // Added for horizontal scroll
+                                whiteSpace: 'nowrap', flexShrink: 0
                             }}
                         >
                             <tab.icon size={20} />
@@ -262,9 +263,24 @@ export default function Settings({ store }) {
             <style>{`
                 .btn-secondary { background: rgba(255,255,255,0.1); color: white; border: none; padding: 8px 16px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.2s; }
                 .btn-secondary:hover { background: rgba(255,255,255,0.2); }
+                .settings-grid { display: grid; grid-template-columns: 250px 1fr; gap: 40px; alignItems: start; }
                 @media (max-width: 768px) {
-                    .container { grid-template-columns: 1fr !important; }
-                    .tabs-sidebar { display: flex; overflow-x: auto; padding-bottom: 20px; position: static !important; }
+                    .container { padding: 15px !important; }
+                    .settings-grid { grid-template-columns: 1fr; gap: 20px; }
+                    .tabs-sidebar { 
+                        display: flex; overflow-x: auto; padding-bottom: 5px; position: static !important; 
+                        margin-bottom: 20px; white-space: nowrap; -webkit-overflow-scrolling: touch;
+                    }
+                    .tabs-sidebar button { 
+                        border-left: none !important; border-bottom: 3px solid transparent; 
+                        border-radius: 12px; padding: 10px 15px; background: rgba(255,255,255,0.05) !important;
+                        margin-right: 10px;
+                    }
+                    .tabs-sidebar button[data-active="true"] {
+                         border-bottom: 3px solid #3b82f6 !important; background: rgba(59, 130, 246, 0.1) !important;
+                         color: #3b82f6 !important;
+                    }
+                    h1 { font-size: 2rem !important; }
                 }
             `}</style>
         </div>
