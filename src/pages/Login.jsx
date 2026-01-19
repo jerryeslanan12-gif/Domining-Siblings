@@ -14,6 +14,19 @@ export default function Login({ onLogin }) {
         phone: '',
     });
 
+    const [avatar, setAvatar] = useState(null);
+
+    const handleAvatarChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setAvatar(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleSendCode = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -28,40 +41,36 @@ export default function Login({ onLogin }) {
         e.preventDefault();
         setLoading(true);
 
-        // Mock Verification Check
-        if (verificationCode !== '1111') { // Mock code
-            // In real app, check against backend
+        // Verification Check (Mock)
+        if (verificationCode !== '1111') {
+            alert("Invalid Code (Hint: use 1111)");
+            setLoading(false);
+            return;
         }
 
         setTimeout(() => {
-            // Mock Encryption of sensitive data before "storing"
-            const encryptedUser = {
-                id: Date.now().toString(),
-                name: formData.name || (formData.email === 'fb@example.com' ? 'Facebook User' : 'User'),
+            const newUser = {
+                name: formData.name,
                 email: formData.email,
-                contact: formData.phone, // "Encrypted" conceptually in backend
-                isVerified: true,
-                avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80',
+                contact: formData.phone,
+                password: formData.password, // Ideally hashed, but for this simpler app: stored as is or ignored by Store
+                avatar: avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80',
                 cover: 'https://images.unsplash.com/photo-1504805572947-34fad45aed93?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80',
-                children: []
             };
-            onLogin(encryptedUser);
+            onLogin(newUser);
             setLoading(false);
-        }, 1500);
+        }, 1000);
     };
 
     const handleLogin = (e) => {
         e.preventDefault();
         setLoading(true);
         setTimeout(() => {
-            // Mock Login
+            // For login, we just pass email. Store handles lookup.
+            // If they don't exist, Store creates them. Ideally we'd validtate password here if Store supported it.
             const user = {
-                id: '1',
-                name: 'Demo User',
                 email: formData.email,
-                avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80',
-                cover: 'https://images.unsplash.com/photo-1504805572947-34fad45aed93?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80',
-                children: []
+                // We don't overwrite name/avatar on login, Store handles 'existing' check
             };
             onLogin(user);
             setLoading(false);
@@ -150,6 +159,13 @@ export default function Login({ onLogin }) {
                         ) : isSignUp ? (
                             <motion.form key="signup" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} onSubmit={handleSendCode}>
                                 <h2>Create Account</h2>
+                                <div className="input-field" style={{ textAlign: 'center', marginBottom: '10px' }}>
+                                    <h4 style={{ color: '#94a3b8', fontSize: '12px', margin: '0 0 10px 0' }}>Upload Profile Picture</h4>
+                                    <div style={{ position: 'relative', width: '80px', height: '80px', margin: '0 auto', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', overflow: 'hidden', border: '2px dashed #94a3b8' }}>
+                                        {avatar ? <img src={avatar} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <User size={30} style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', opacity: 0.5 }} />}
+                                        <input type="file" onChange={handleAvatarChange} accept="image/*" style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }} />
+                                    </div>
+                                </div>
                                 <div className="input-field">
                                     <User size={18} />
                                     <input name="name" placeholder="Full Name" onChange={handleChange} required />
