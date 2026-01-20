@@ -89,7 +89,7 @@ export default function Messenger({ user, store }) {
 
                     {/* Online Users Row */}
                     <div style={{ display: 'flex', gap: '15px', overflowX: 'auto', paddingBottom: '10px', scrollbarWidth: 'none' }}>
-                        {contacts.filter(c => store.online[c.id] && (now - store.online[c.id] < 30000)).map(c => (
+                        {contacts.filter(c => store.online?.[c.id] && (now - store.online[c.id] < 30000)).map(c => (
                             <div key={c.id} onClick={() => setActiveChatId(c.id)} style={{ cursor: 'pointer', textAlign: 'center', minWidth: '60px' }}>
                                 <div style={{ position: 'relative', display: 'inline-block' }}>
                                     <img src={c.avatar} style={{ width: '50px', height: '50px', borderRadius: '50%', border: '2px solid #22c55e', padding: '2px' }} />
@@ -100,7 +100,7 @@ export default function Messenger({ user, store }) {
                                 </div>
                             </div>
                         ))}
-                        {contacts.filter(c => store.online[c.id] && (now - store.online[c.id] < 30000)).length === 0 && (
+                        {contacts.filter(c => store.online?.[c.id] && (now - store.online[c.id] < 30000)).length === 0 && (
                             <span style={{ fontSize: '12px', color: '#94a3b8' }}>No one is online right now.</span>
                         )}
                     </div>
@@ -126,14 +126,13 @@ export default function Messenger({ user, store }) {
                                 }}>
                                 <div style={{ position: 'relative' }}>
                                     <img src={c.avatar} style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover' }} />
-                                    {store.online[c.id] && (now - store.online[c.id] < 30000) &&
+                                    {store.online?.[c.id] && (now - store.online[c.id] < 30000) &&
                                         <div style={{ position: 'absolute', bottom: 2, right: 2, width: 10, height: 10, borderRadius: '50%', background: '#22c55e', border: '2px solid rgba(0,0,0,0.8)' }}></div>
                                     }
                                 </div>
                                 <div style={{ flex: 1 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                         <h4 style={{ margin: 0, color: 'white', fontSize: '15px' }}>{c.name}</h4>
-                                        {/* Last msg time could go here */}
                                     </div>
                                     <p style={{ margin: '2px 0 0 0', color: '#94a3b8', fontSize: '13px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '180px' }}>
                                         Tap to chat
@@ -147,7 +146,7 @@ export default function Messenger({ user, store }) {
 
             {/* Chat Area */}
             <div className={`messenger-chat ${!activeChatId ? 'mobile-hidden' : ''}`} style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'rgba(0,0,0,0.1)' }}>
-                {activeChatId ? (
+                {activeChatId && activeUser ? (
                     <>
                         {/* Header */}
                         <div style={{ padding: '10px 15px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.03)' }}>
@@ -159,10 +158,10 @@ export default function Messenger({ user, store }) {
                                 >
                                     <ArrowLeft size={24} />
                                 </button>
-                                <img src={activeUser?.avatar} style={{ width: '40px', height: '40px', borderRadius: '50%', border: '2px solid rgba(255,255,255,0.1)' }} />
+                                <img src={activeUser.avatar} style={{ width: '40px', height: '40px', borderRadius: '50%', border: '2px solid rgba(255,255,255,0.1)' }} />
                                 <div>
-                                    <h4 style={{ margin: 0, color: 'white', fontSize: '16px' }}>{activeUser?.name}</h4>
-                                    {store.online[activeChatId] && (now - store.online[activeChatId] < 30000) ?
+                                    <h4 style={{ margin: 0, color: 'white', fontSize: '16px' }}>{activeUser.name}</h4>
+                                    {store.online?.[activeChatId] && (now - store.online[activeChatId] < 30000) ?
                                         <span style={{ fontSize: '12px', color: '#22c55e', fontWeight: '500' }}>Active Now</span> :
                                         <span style={{ fontSize: '12px', color: '#94a3b8' }}>Offline</span>
                                     }
@@ -181,7 +180,7 @@ export default function Messenger({ user, store }) {
                             {relevantMessages.length === 0 && (
                                 <div style={{ textAlign: 'center', marginTop: '40px', color: '#64748b' }}>
                                     <p>No messages yet.</p>
-                                    <p style={{ fontSize: '13px' }}>Wave to {activeUser?.name} to start!</p>
+                                    <p style={{ fontSize: '13px' }}>Wave to {activeUser.name} to start!</p>
                                 </div>
                             )}
                             {relevantMessages.map(m => (
@@ -263,11 +262,11 @@ export default function Messenger({ user, store }) {
                 .back-btn { display: none; }
 
                 @media (max-width: 768px) {
-                    .messenger-container { height: calc(100vh - 80px) !important; border: none !important; }
+                    .messenger-container { height: calc(100vh - 85px) !important; border: none !important; }
                     .messenger-sidebar { width: 100% !important; }
                     .mobile-hidden { display: none !important; }
                     .back-btn { display: block; }
-                    .desktop-only-placeholder { display: none !important; } /* Should not happen due to structure, but just in case */
+                    .desktop-only-placeholder { display: none !important; }
                 }
             `}</style>
         </div>
