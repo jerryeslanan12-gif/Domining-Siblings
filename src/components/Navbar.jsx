@@ -22,7 +22,7 @@ export default function Navbar({ searchQuery, setSearchQuery }) {
                     </div>
                     <span className="app-name-text" style={{ fontSize: '22px', fontWeight: '800', color: 'white', letterSpacing: '-0.5px' }}>Domining</span>
                 </Link>
-                <div className="glass-input-wrapper" style={{ position: 'relative' }}>
+                <div className="glass-input-wrapper nav-search-container" style={{ position: 'relative' }}>
                     <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.5)' }} />
                     <input
                         className="glass-input"
@@ -32,6 +32,11 @@ export default function Navbar({ searchQuery, setSearchQuery }) {
                         style={{ paddingLeft: '40px', width: '220px', borderRadius: '50px' }}
                     />
                 </div>
+                <style>{`
+                    @media (max-width: 768px) {
+                        .nav-search-container { display: none !important; }
+                    }
+                `}</style>
             </div>
 
             <div className="nav-center" style={{ display: 'flex', gap: '8px' }}>

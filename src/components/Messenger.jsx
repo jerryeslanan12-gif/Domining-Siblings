@@ -17,7 +17,7 @@ export default function Messenger({ user, store }) {
         return () => clearInterval(interval);
     }, []);
 
-    // Get unique list of people involved in messages or just all users
+    // List all users except current user
     const contacts = store.users.filter(u => u.id !== user.id);
     const activeUser = contacts.find(c => c.id === activeChatId);
 

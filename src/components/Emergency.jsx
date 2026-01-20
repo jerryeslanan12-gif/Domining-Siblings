@@ -41,6 +41,10 @@ export default function Emergency({ active, setActive }) {
     const startBroadcast = () => {
         setStep('broadcasting');
 
+        if ("Notification" in window && Notification.permission !== "granted") {
+            Notification.requestPermission();
+        }
+
         const newEmergencyId = 'em_' + Date.now();
         setCurrentEmergencyId(newEmergencyId);
 
@@ -198,12 +202,12 @@ export default function Emergency({ active, setActive }) {
                                 >
                                     <ArrowRight size={24} style={{ transform: 'rotate(180deg)' }} />
                                 </button>
-                                <h3 style={{ color: 'white', fontSize: '20px', fontWeight: 'bold' }}>Emergency Hotlines</h3>
+                                <h3 style={{ color: 'white', fontSize: '24px', fontWeight: 'bold' }}>Emergency Hotlines</h3>
                             </div>
 
                             <div className="glass-panel" style={{ overflowY: 'auto', padding: '20px', textAlign: 'left' }}>
                                 <div style={{ marginBottom: '25px' }}>
-                                    <h4 style={{ color: '#fbbf24', fontSize: '14px', uppercase: 'uppercase', letterSpacing: '1px', marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px' }}>City Services</h4>
+                                    <h4 style={{ color: '#fbbf24', fontSize: '18px', uppercase: 'uppercase', letterSpacing: '1px', marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px' }}>City Services</h4>
                                     <HotlineItem name="CDRRMO" numbers={['0917-711-3536', '0918-9357-858', '926-9274']} />
                                     <HotlineItem name="ZCDRRMO" numbers={['990-1171', '926-1848', '955-9601']} />
                                     <HotlineItem name="EMS" numbers={['926-1849']} />
@@ -211,7 +215,7 @@ export default function Emergency({ active, setActive }) {
                                 </div>
 
                                 <div>
-                                    <h4 style={{ color: '#60a5fa', fontSize: '14px', uppercase: 'uppercase', letterSpacing: '1px', marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px' }}>Police Stations</h4>
+                                    <h4 style={{ color: '#60a5fa', fontSize: '18px', uppercase: 'uppercase', letterSpacing: '1px', marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px' }}>Police Stations</h4>
                                     <HotlineItem name="ZCPO (Police Office)" numbers={['0977-855-8138']} />
                                     <HotlineItem name="PS1 - Vitali" numbers={['0935-604-4139', '0998-967-3923']} />
                                     <HotlineItem name="PS2 - Curuan" numbers={['0935-457-2483', '0918-230-7135']} />
@@ -226,76 +230,58 @@ export default function Emergency({ active, setActive }) {
                     )}
 
                     {step === 'broadcasting' && (
-                        <div style={{ width: '100%', maxWidth: '500px', textAlign: 'center' }}>
+                        <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
                             <motion.div
-                                animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
-                                transition={{ repeat: Infinity, duration: 2 }}
+                                animate={{ scale: [1, 2, 1], opacity: [0.5, 0, 0.5] }}
+                                transition={{ repeat: Infinity, duration: 1 }}
                                 style={{
                                     position: 'absolute', top: '50%', left: '50%', x: '-50%', y: '-50%',
-                                    width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(239,68,68,0.5) 0%, transparent 70%)',
+                                    width: '100vw', height: '100vw', background: 'radial-gradient(circle, rgba(239,68,68,0.6) 0%, transparent 70%)',
                                     zIndex: -1
                                 }}
                             />
 
-                            <div className="glass-panel" style={{ padding: '30px', border: '1px solid #ef4444', boxShadow: '0 0 50px rgba(239,68,68,0.3)' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', marginBottom: '20px' }}>
-                                    <AlertTriangle size={48} color="#ef4444" />
-                                    <div style={{ textAlign: 'left' }}>
-                                        <h2 style={{ color: 'white', fontSize: '24px', fontWeight: '800', lineHeight: '1' }}>SOS ACTIVE</h2>
-                                        <p style={{ color: '#fda4af', fontSize: '13px' }}>Broadcasting to {store.users.length} Family Members</p>
+                            <div className="glass-panel" style={{ padding: '40px', border: '2px solid #ef4444', boxShadow: '0 0 100px rgba(239,68,68,0.5)', width: '90%', maxWidth: '600px' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', marginBottom: '30px' }}>
+                                    <AlertTriangle size={80} color="#ef4444" />
+                                    <div>
+                                        <h2 style={{ color: 'white', fontSize: '48px', fontWeight: '900', lineHeight: '1', margin: 0 }}>SOS ACTIVE</h2>
+                                        <p style={{ color: '#fda4af', fontSize: '20px', marginTop: '10px' }}>Broadcasting to {store.users.length} Family Members</p>
                                     </div>
                                 </div>
 
-                                <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '20px', fontSize: '14px', background: 'rgba(0,0,0,0.2)', padding: '8px', borderRadius: '8px' }}>
-                                    <MapPin size={12} style={{ marginRight: '5px' }} />
+                                <p style={{ color: 'rgba(255,255,255,0.8)', marginBottom: '30px', fontSize: '18px', background: 'rgba(0,0,0,0.3)', padding: '15px', borderRadius: '12px', fontWeight: 'bold' }}>
+                                    <MapPin size={18} style={{ marginRight: '10px' }} />
                                     Loc: {location ? `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}` : 'Acquiring...'}
                                 </p>
 
                                 {/* Response Hub UI */}
-                                <div style={{ textAlign: 'left', marginBottom: '20px', background: 'rgba(0,0,0,0.3)', borderRadius: '12px', padding: '15px', maxHeight: '200px', overflowY: 'auto' }}>
-                                    <h4 style={{ color: 'white', fontSize: '14px', marginBottom: '10px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px' }}>Emergency Response Hub</h4>
+                                <div style={{ textAlign: 'left', marginBottom: '30px', background: 'rgba(0,0,0,0.3)', borderRadius: '12px', padding: '20px', maxHeight: '300px', overflowY: 'auto' }}>
+                                    <h4 style={{ color: 'white', fontSize: '16px', marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Emergency Response Hub</h4>
 
                                     {/* Responders List */}
-                                    <div style={{ marginBottom: '15px' }}>
+                                    <div style={{ marginBottom: '20px' }}>
                                         {activeEmergency?.responders?.length > 0 ? (
                                             activeEmergency.responders.map((r, i) => (
-                                                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px', background: 'rgba(74, 222, 128, 0.1)', padding: '8px', borderRadius: '8px', borderLeft: '3px solid #4ade80' }}>
-                                                    <div style={{ width: '8px', height: '8px', background: '#4ade80', borderRadius: '50%' }}></div>
+                                                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '10px', background: 'rgba(74, 222, 128, 0.1)', padding: '15px', borderRadius: '12px', borderLeft: '5px solid #4ade80' }}>
+                                                    <div style={{ width: '12px', height: '12px', background: '#4ade80', borderRadius: '50%' }}></div>
                                                     <div>
-                                                        <div style={{ color: 'white', fontSize: '13px', fontWeight: 'bold' }}>{r.name}</div>
-                                                        <div style={{ color: '#4ade80', fontSize: '11px' }}>{r.status}</div>
+                                                        <div style={{ color: 'white', fontSize: '16px', fontWeight: 'bold' }}>{r.name}</div>
+                                                        <div style={{ color: '#4ade80', fontSize: '14px' }}>{r.status}</div>
                                                     </div>
                                                 </div>
                                             ))
                                         ) : (
-                                            <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px', fontStyle: 'italic' }}>Waiting for family response...</div>
-                                        )}
-                                    </div>
-
-                                    {/* Chat Preview */}
-                                    <div>
-                                        {activeEmergency?.chat?.length > 0 ? (
-                                            activeEmergency.chat.map((msg, i) => (
-                                                <div key={i} style={{ marginBottom: '5px', fontSize: '12px' }}>
-                                                    <span style={{ color: 'white', fontWeight: 'bold' }}>{msg.sender}: </span>
-                                                    <span style={{ color: 'rgba(255,255,255,0.8)' }}>{msg.text}</span>
-                                                </div>
-                                            ))
-                                        ) : (
-                                            <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px' }}>Secure channel open.</div>
+                                            <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '14px', fontStyle: 'italic', textAlign: 'center', padding: '20px' }}>Waiting for family response...</div>
                                         )}
                                     </div>
                                 </div>
 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                                    <div style={{ background: '#0f172a', padding: '10px', borderRadius: '12px', textAlign: 'center', border: '1px solid rgba(255,255,255,0.1)' }}>
-                                        <div style={{ color: '#fcb900', fontSize: '12px', fontWeight: 'bold', marginBottom: '5px' }}>911 Services</div>
-                                        <div style={{ color: 'white', fontSize: '11px' }}>Connecting...</div>
-                                    </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '15px' }}>
                                     <button
                                         onClick={cancelAlert}
                                         className="glass-btn secondary"
-                                        style={{ width: '100%', background: '#334155', border: '1px solid #475569', fontSize: '13px' }}
+                                        style={{ width: '100%', background: '#334155', border: '1px solid #475569', fontSize: '20px', padding: '20px', fontWeight: 'bold' }}
                                     >
                                         I AM SAFE
                                     </button>

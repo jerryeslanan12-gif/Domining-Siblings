@@ -7,10 +7,9 @@ export default function Feed({ user, store, searchQuery }) {
     const [newPost, setNewPost] = useState('');
     const [attachment, setAttachment] = useState(null); // { type: 'image' | 'video', url: string }
     const [feeling, setFeeling] = useState('');
-    const [location, setLocation] = useState('');
+    const [zoomedImage, setZoomedImage] = useState(null);
 
     const [showFeelings, setShowFeelings] = useState(false);
-
     const FEELINGS_LIST = ['Happy 😄', 'Excited 🤩', 'Blessed 😇', 'Loved 🥰', 'Sad 😔', 'Tired 😴', 'Angry 😠', 'Sick 😷'];
 
     const handlePost = () => {
@@ -25,7 +24,7 @@ export default function Feed({ user, store, searchQuery }) {
             video: attachment?.type === 'video' ? attachment.url : null,
             feeling: feeling,
             location: location,
-            likes: [], // Will store objects now { userId, type }
+            likes: [],
             comments: [],
             timestamp: Date.now()
         };

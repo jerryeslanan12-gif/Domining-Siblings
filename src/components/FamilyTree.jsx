@@ -55,7 +55,7 @@ export default function FamilyTree({ store }) {
     };
 
     return (
-        <div className="family-tree-canvas" style={{ minHeight: '85vh', borderRadius: '32px', position: 'relative', overflow: 'hidden', padding: '40px', border: '1px solid #eef2f6' }}>
+        <div className="family-tree-canvas" style={{ minHeight: '85vh', borderRadius: '32px', position: 'relative', overflow: 'auto', padding: '40px', border: '1px solid #eef2f6' }}>
             <div className="tree-header">
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>

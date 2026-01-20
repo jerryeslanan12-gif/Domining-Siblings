@@ -15,7 +15,7 @@ const KEYS = {
 
 const defaultSettings = {
     wisdomPopup: true,
-    theme: 'light'
+    theme: 'dark'
 };
 
 const getStore = () => {
